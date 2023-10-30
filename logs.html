@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Log Consumer</title>
+</head>
+
+<body>
+<div id="log-container"></div>
+
+<script>
+    const logContainer = document.getElementById("log-container");
+    const socket = new WebSocket("ws://localhost:8080/logs"); // WebSocket server address
+
+    socket.onopen = function (event) {
+        console.log("WebSocket connection opened:", event);
+    };
+
+    socket.onmessage = function (event) {
+        const logMessage = event.data;
+        const logElement = document.createElement("div");
+        logElement.textContent = logMessage;
+        logContainer.appendChild(logElement);
+    };
+
+    socket.onclose = function (event) {
+        if (event.wasClean) {
+            console.log(`Closed cleanly, code=${event.code}, reason=${event.reason}`);
+        } else {
+            console.error(`Connection died`);
+        }
+    };
+
+    socket.onerror = function (error) {
+        console.error("WebSocket Error:", error);
+    };
+</script>
+</body>
+
+</html>
